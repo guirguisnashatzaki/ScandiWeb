@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Add</title>
+    <link rel="stylesheet" href="stylesAdd.css">
+    <style>
+        .error-messages ul {
+            color: red;
+            list-style-type: none;
+            padding: 0;
+        }
+        .error-messages li {
+            margin-bottom: 5px;
+        }
+        .success-message {
+            color: green;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main>
+            <h1>Product Add</h1>
+            <form id="product_form" action="add_product.php" method="post">
+                <div class="form-group">
+                    <label for="sku">SKU</label>
+                    <input type="text" id="sku" name="sku">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price ($)</label>
+                    <input type="number" id="price" name="price" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="productType">Type Switcher</label>
+                    <select id="productType" name="productType">
+                        <option value="Choose..">Choose..</option>
+                        <option value="DVD">DVD</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Book">Book</option>
+                    </select>
+                </div>
+                <div class="dynamic-form">
+                    <div id="DVD" class="form-group">
+                        <label for="size">Size (MB)</label>
+                        <input type="number" id="size" name="size" >
+                        <p>"Product description"</p>
+                    </div>
+                    <div id="Furniture" class="form-group">
+                        <label for="height">Height (CM)</label>
+                        <input type="number" id="height" name="height" min="0">
+                        <label for="width">Width (CM)</label>
+                        <input type="number" id="width" name="width" min="0">
+                        <label for="length">Length (CM)</label>
+                        <input type="number" id="length" name="length" min="0">
+                        <p>"Product description"</p>
+                    </div>
+                    <div id="Book" class="form-group">
+                        <label for="weight">Weight (KG)</label>
+                        <input type="number" id="weight" name="weight" min="0">
+                        <p>"Product description"</p>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" class="btn save"></button>
+                    <button type="button" class="btn cancel"><a href="index.php">Cancel</a></button>
+                </div>
+
+                <br>
+                <br>
+                <div id="messages">
+                    <ul>
+
+                    </ul>
+                </div>
+            </form>
+        </main>
+    </div>
+    <script>
+        document.getElementById('productType').addEventListener('change', function() {
+            var dvdForm = document.getElementById('DVD');
+            var furnitureForm = document.getElementById('Furniture');
+            var bookForm = document.getElementById('Book');
+
+            dvdForm.style.display = 'none';
+            furnitureForm.style.display = 'none';
+            bookForm.style.display = 'none';
+
+            if (this.value === 'DVD') {
+                dvdForm.style.display = 'block';
+            } else if (this.value === 'Furniture') {
+                furnitureForm.style.display = 'block';
+            } else if (this.value === 'Book') {
+                bookForm.style.display = 'block';
+            }
+        });
+
+        document.getElementById('product_form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting immediately
+
+            var errors = [];
+            var sku = document.getElementById('sku').value.trim();
+            var name = document.getElementById('name').value.trim();
+            var price = document.getElementById('price').value.trim();
+            var productType = document.getElementById('productType').value;
+            var size = height = width = length = weight = null;
+
+            // Basic validation
+            if (sku === '') {
+                errors.push("SKU is required");
+            }
+            if (name === '') {
+                errors.push("Name is required");
+            }
+            if (!isNumeric(price) || parseFloat(price) <= 0) {
+                errors.push("Price must be a positive number");
+            }
+            if (productType === '') {
+                errors.push("Product type is required");
+            } else {
+                if (productType === 'DVD') {
+                    size = document.getElementById('size').value.trim();
+                    if (!isNumeric(size) || parseFloat(size) <= 0) {
+                        errors.push("Size must be a positive number");
+                    }
+                } else if (productType === 'Furniture') {
+                    height = document.getElementById('height').value.trim();
+                    width = document.getElementById('width').value.trim();
+                    length = document.getElementById('length').value.trim();
+                    if (!isNumeric(height) || parseFloat(height) <= 0 || !isNumeric(width) || parseFloat(width) <= 0 || !isNumeric(length) || parseFloat(length) <= 0) {
+                        errors.push("Height, Width, and Length must be positive numbers");
+                    }
+                } else if (productType === 'Book') {
+                    weight = document.getElementById('weight').value.trim();
+                    if (!isNumeric(weight) || parseFloat(weight) <= 0) {
+                        errors.push("Weight must be a positive number");
+                    }
+                }
+            }
+
+            var messages = document.getElementById('messages');
+            messages.innerHTML = '';
+
+            if (errors.length > 0) {
+                var errorList = document.createElement('ul');
+                errorList.classList.add('error-messages');
+                errors.forEach(function(error) {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = error;
+                    errorList.appendChild(listItem);
+                });
+                messages.appendChild(errorList);
+            } else {
+                // If no errors, submit the form
+                var formData = new FormData(document.getElementById('product_form'));
+                fetch('add_product.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data === "success"){
+                        window.location.href = 'index.php';
+                    }else{
+                        messages.innerHTML = data;
+                    }  
+                })
+                .catch(error => {
+                    console.error('Error:', error.data);
+                });
+            }
+        });
+
+        function isNumeric(value) {
+            return !isNaN(value - parseFloat(value));
+        }
+    </script>
+</body>
+</html>

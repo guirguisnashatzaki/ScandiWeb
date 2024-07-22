@@ -1,0 +1,110 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.navbar input {
+    flex: 1;
+    padding: 5px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+}
+
+.search-button {
+    margin-left: auto;
+}
+
+main {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.form-group p {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+.dynamic-form > .form-group {
+    display: none;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.btn a{
+    text-decoration: none;
+    color: white;
+}
+
+.btn.cancel {
+    background-color: #dc3545;
+}
+
+.btn.save {
+    background-color: #28a745;
+}
