@@ -3,10 +3,10 @@
 include 'ProductClass.php';
 include 'ProductFactory.php';
 
-$servername = "localhost"; // Database server name
-$username = "root";        // Database username
-$password = "";            // Database password
-$dbname = "productdb";     // Database name
+$servername = getenv('DB_HOST');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME');
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
